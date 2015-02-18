@@ -26,6 +26,8 @@
 #include "guiutil.h"
 #include "rpcconsole.h"
 #include "wallet.h"
+#include "radio.h"
+#include "webshop.h"
 
 #ifdef Q_OS_MAC
 #include "macdockiconhandler.h"
@@ -77,7 +79,7 @@ BitcoinGUI::BitcoinGUI(QWidget *parent):
     notificator(0),
     rpcConsole(0)
 {
-    resize(850, 550);
+    resize(940, 592);
     setWindowTitle(tr("MetalCoin") + " - " + tr("Wallet"));
 #ifndef Q_OS_MAC
     qApp->setWindowIcon(QIcon(":icons/bitcoin"));
@@ -115,6 +117,8 @@ BitcoinGUI::BitcoinGUI(QWidget *parent):
     receiveCoinsPage = new AddressBookPage(AddressBookPage::ForEditing, AddressBookPage::ReceivingTab);
 
     sendCoinsPage = new SendCoinsDialog(this);
+    radioPage = new Radio(this);
+    webshopPage = new Webshop(this);
 
     signVerifyMessageDialog = new SignVerifyMessageDialog(this);
 
@@ -124,6 +128,8 @@ BitcoinGUI::BitcoinGUI(QWidget *parent):
     centralWidget->addWidget(addressBookPage);
     centralWidget->addWidget(receiveCoinsPage);
     centralWidget->addWidget(sendCoinsPage);
+    centralWidget->addWidget(radioPage);
+    centralWidget->addWidget(webshopPage);
     setCentralWidget(centralWidget);
 
     // Create status bar
@@ -240,6 +246,18 @@ void BitcoinGUI::createActions()
     addressBookAction->setCheckable(true);
     addressBookAction->setShortcut(QKeySequence(Qt::ALT + Qt::Key_5));
     tabGroup->addAction(addressBookAction);
+    
+    radioAction = new QAction(QIcon(":/icons/radio"), tr("&Web Radio"), this);
+    radioAction->setToolTip(tr("Listen to Metal Mosh Pit"));
+    radioAction->setCheckable(true);
+    radioAction->setShortcut(QKeySequence(Qt::ALT + Qt::Key_6));
+    tabGroup->addAction(radioAction);
+    
+    webshopAction = new QAction(QIcon(":/icons/webshop"), tr("&Mosh Pit"), this);
+    webshopAction->setToolTip(tr("Buy Stuff at the Metal Mosh Pit"));
+    webshopAction->setCheckable(true);
+    webshopAction->setShortcut(QKeySequence(Qt::ALT + Qt::Key_7));
+    tabGroup->addAction(webshopAction);
 
     connect(overviewAction, SIGNAL(triggered()), this, SLOT(showNormalIfMinimized()));
     connect(overviewAction, SIGNAL(triggered()), this, SLOT(gotoOverviewPage()));
@@ -251,6 +269,10 @@ void BitcoinGUI::createActions()
     connect(historyAction, SIGNAL(triggered()), this, SLOT(gotoHistoryPage()));
     connect(addressBookAction, SIGNAL(triggered()), this, SLOT(showNormalIfMinimized()));
     connect(addressBookAction, SIGNAL(triggered()), this, SLOT(gotoAddressBookPage()));
+    connect(radioAction, SIGNAL(triggered()), this, SLOT(gotoRadioPage()));
+    connect(radioAction, SIGNAL(triggered()), this, SLOT(showNormalIfMinimized()));
+    connect(webshopAction, SIGNAL(triggered()), this, SLOT(gotoWebshopPage()));
+    connect(webshopAction, SIGNAL(triggered()), this, SLOT(showNormalIfMinimized()));
 
     quitAction = new QAction(QIcon(":/icons/quit"), tr("E&xit"), this);
     quitAction->setToolTip(tr("Quit application"));
@@ -342,6 +364,8 @@ void BitcoinGUI::createToolBars()
     toolbar->addAction(receiveCoinsAction);
     toolbar->addAction(historyAction);
     toolbar->addAction(addressBookAction);
+    toolbar->addAction(radioAction);
+    toolbar->addAction(webshopAction);
 
     QToolBar *toolbar2 = addToolBar(tr("Actions toolbar"));
     toolbar2->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
@@ -448,6 +472,8 @@ void BitcoinGUI::createTrayIcon()
     trayIconMenu->addSeparator();
     trayIconMenu->addAction(optionsAction);
     trayIconMenu->addAction(openRPCConsoleAction);
+    trayIconMenu->addAction(radioAction);
+    trayIconMenu->addAction(webshopAction);
 #ifndef Q_OS_MAC // This is built-in on Mac
     trayIconMenu->addSeparator();
     trayIconMenu->addAction(quitAction);
@@ -760,6 +786,24 @@ void BitcoinGUI::gotoVerifyMessageTab(QString addr)
 
     if(!addr.isEmpty())
         signVerifyMessageDialog->setAddress_VM(addr);
+}
+
+void BitcoinGUI::gotoRadioPage()
+{
+    radioAction->setChecked(true);
+    centralWidget->setCurrentWidget(radioPage);
+
+    exportAction->setEnabled(false);
+    disconnect(exportAction, SIGNAL(triggered()), 0, 0);
+}
+
+void BitcoinGUI::gotoWebshopPage()
+{
+    webshopAction->setChecked(true);
+    centralWidget->setCurrentWidget(webshopPage);
+
+    exportAction->setEnabled(false);
+    disconnect(exportAction, SIGNAL(triggered()), 0, 0);
 }
 
 void BitcoinGUI::dragEnterEvent(QDragEnterEvent *event)
