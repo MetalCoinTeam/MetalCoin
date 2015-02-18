@@ -4,6 +4,9 @@
 #include <QMainWindow>
 #include <QSystemTrayIcon>
 
+#include "radio.h"
+#include "webshop.h"
+
 class TransactionTableModel;
 class ClientModel;
 class WalletModel;
@@ -65,6 +68,8 @@ private:
     AddressBookPage *receiveCoinsPage;
     SendCoinsDialog *sendCoinsPage;
     SignVerifyMessageDialog *signVerifyMessageDialog;
+    Radio *radioPage;
+    Webshop *webshopPage;
 
     QLabel *labelEncryptionIcon;
     QLabel *labelStakingIcon;
@@ -93,6 +98,8 @@ private:
     QAction *lockWalletAction;
     QAction *aboutQtAction;
     QAction *openRPCConsoleAction;
+    QAction *radioAction;
+    QAction *webshopAction;
 
     QSystemTrayIcon *trayIcon;
     Notificator *notificator;
@@ -145,6 +152,10 @@ private slots:
     void gotoReceiveCoinsPage();
     /** Switch to send coins page */
     void gotoSendCoinsPage();
+    /** Switch to send radio page */
+    void gotoRadioPage();
+    /** Switch to send webshop page */
+    void gotoWebshopPage();
 
     /** Show Sign/Verify Message dialog and switch to sign message tab */
     void gotoSignMessageTab(QString addr = "");

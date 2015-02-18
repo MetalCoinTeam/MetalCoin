@@ -3,6 +3,8 @@
         <file alias="bitcoin">res/icons/MetalCoin.png</file>
 		<file alias="drmbg">res/icons/MetalCoin-256.png</file>
         <file alias="address-book">res/icons/address-book.png</file>
+        <file alias="radio">res/icons/radio.png</file>
+        <file alias="webshop">res/icons/webshop.png</file>
         <file alias="quit">res/icons/quit.png</file>
         <file alias="send">res/icons/send.png</file>
         <file alias="toolbar">res/icons/MetalCoin-16.png</file>
